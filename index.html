@@ -60,11 +60,21 @@
             font-size: 1.5em;
             color: #2c3e50;
         }
+
+        #timer {
+            font-size: 1.5em;
+            color: #e74c3c;
+            font-weight: bold;
+        }
     </style>
 </head>
 
 <body>
     <h1>Aryan's English Learning Portal</h1>
+
+    <div class="section">
+        <h2>⏱️ Time Left: <span id="timer">30:00</span></h2>
+    </div>
 
     <div class="section">
         <h2>📚 The Unlikely Best Friends – The Chir</h2>
@@ -112,6 +122,22 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script>
         const { jsPDF } = window.jspdf;
+
+        let totalTime = 30 * 60;
+        const timerDisplay = document.getElementById('timer');
+
+        const timerInterval = setInterval(() => {
+            let minutes = Math.floor(totalTime / 60);
+            let seconds = totalTime % 60;
+            timerDisplay.innerText = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+            totalTime--;
+
+            if (totalTime < 0) {
+                clearInterval(timerInterval);
+                alert('⏳ Time is up! The quiz will be submitted automatically.');
+                checkCompletion();
+            }
+        }, 1000);
 
         const questions = [
             { q: 'Q1: "Bird" is a —', options: ['Noun', 'Verb', 'Adjective'], answer: 0 },
@@ -195,20 +221,17 @@
         }
 
         function checkCompletion() {
-            if (answered.every(ans => ans)) {
-                const totalMarks = correctAnswers * 2;
-                resultContainer.innerText = `🎉 You answered all questions! Score: ${totalMarks}/80`;
+            clearInterval(timerInterval);
+            const totalMarks = correctAnswers * 2;
+            resultContainer.innerText = `🎉 Quiz Completed! Your Score: ${totalMarks}/80`;
 
-                certText.innerHTML = `
-                    Name: Aryan<br>
-                    Marks Scored: ${totalMarks} / 80<br>
-                    Keep learning and stay awesome! 🌟
-                `;
+            certText.innerHTML = `
+                Name: Aryan<br>
+                Marks Scored: ${totalMarks} / 80<br>
+                Keep learning and stay awesome! 🌟
+            `;
 
-                certificate.style.display = 'block';
-            } else {
-                resultContainer.innerText = 'Please answer all questions before submitting!';
-            }
+            certificate.style.display = 'block';
         }
 
         function generateCertificatePDF() {
