@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aryan's English Learning Portal</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f8ff;
+            padding: 20px;
+            text-align: center;
+        }
+
+        h1 {
+            color: #2c3e50;
+        }
+
+        .section {
+            background-color: #ffffff;
+            padding: 15px;
+            margin: 15px auto;
+            border-radius: 10px;
+            max-width: 700px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .quiz {
+            text-align: left;
+            margin-top: 20px;
+        }
+
+        button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            margin: 5px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #2980b9;
+        }
+
+        .result {
+            font-weight: bold;
+            color: green;
+            margin-top: 10px;
+        }
+
+        .certificate {
+            display: none;
+            background-color: #e0ffe0;
+            padding: 20px;
+            margin-top: 20px;
+            border-radius: 10px;
+            font-size: 1.5em;
+            color: #2c3e50;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Aryan's English Learning Portal</h1>
+
+    <div class="section">
+        <h2>📚 The Unlikely Best Friends – The Chir</h2>
+        <p>This chapter is about how a human and a bird became unlikely best friends. The Chir thought about friendship and its importance.</p>
+    </div>
+
+    <div class="section">
+        <h2>📝 Grammar Concepts</h2>
+        <h3>1️⃣ Nouns</h3>
+        <p>Examples: bird, friend, tree, chir</p>
+
+        <h3>2️⃣ Noun Gender</h3>
+        <p>Examples: Boy - Masculine, Girl - Feminine</p>
+
+        <h3>3️⃣ Noun Case</h3>
+        <p>Subject Case: The bird sings.<br>Object Case: I saw the bird.</p>
+
+        <h3>4️⃣ Adjectives</h3>
+        <p>Examples: beautiful, small, big</p>
+
+        <h3>5️⃣ Degree of Comparison</h3>
+        <p>Positive: small<br>Comparative: smaller<br>Superlative: smallest</p>
+
+        <h3>6️⃣ Verbs</h3>
+        <p>Examples: chirped, sang, flew</p>
+    </div>
+
+    <div class="section quiz">
+        <h2>✅ Quiz Time (40 Questions)</h2>
+        <div id="quiz-container"></div>
+        <button onclick="checkCompletion()">Finish Quiz</button>
+        <div class="result" id="result"></div>
+    </div>
+
+    <div class="section certificate" id="certificate">
+        🎉 Congratulations Aryan! You completed the quiz successfully! 🎉
+        <br><br>
+        📜 Certificate of Achievement 📜
+        <br><br>
+        <div id="cert-text"></div>
+        <br>
+        <button onclick="generateCertificatePDF()">Download Certificate PDF</button>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script>
+        const { jsPDF } = window.jspdf;
+
+        const questions = [
+            { q: 'Q1: "Bird" is a —', options: ['Noun', 'Verb', 'Adjective'], answer: 0 },
+            { q: 'Q2: The comparative of "small" is —', options: ['smaller', 'smallest', 'small'], answer: 0 },
+            { q: 'Q3: "Chirped" is a —', options: ['Verb', 'Adjective', 'Noun'], answer: 0 },
+            { q: 'Q4: "Beautiful" is a —', options: ['Adjective', 'Noun', 'Verb'], answer: 0 },
+            { q: 'Q5: "He is the _____ boy in the class."', options: ['tall', 'taller', 'tallest'], answer: 2 },
+            { q: 'Q6: The noun gender of "actress" is —', options: ['Masculine', 'Feminine', 'Neutral'], answer: 1 },
+            { q: 'Q7: "Sing" is a —', options: ['Noun', 'Verb', 'Adjective'], answer: 1 },
+            { q: 'Q8: The superlative of "good" is —', options: ['goodest', 'better', 'best'], answer: 2 },
+            { q: 'Q9: "Friend" is an example of —', options: ['Verb', 'Noun', 'Adjective'], answer: 1 },
+            { q: 'Q10: "He flies a plane." The word "flies" is a —', options: ['Adjective', 'Noun', 'Verb'], answer: 2 },
+            { q: 'Q11: "Tree" is a —', options: ['Adjective', 'Noun', 'Verb'], answer: 1 },
+            { q: 'Q12: The feminine of "actor" is —', options: ['actress', 'actorine', 'actressy'], answer: 0 },
+            { q: 'Q13: Degree of Comparison of "bright"?', options: ['Brighter', 'Brightly', 'Brightest'], answer: 0 },
+            { q: 'Q14: "They chirped happily." The word "chirped" is a —', options: ['Noun', 'Verb', 'Adjective'], answer: 1 },
+            { q: 'Q15: "The chir sang a sweet song." "Sweet" is a —', options: ['Verb', 'Noun', 'Adjective'], answer: 2 },
+            { q: 'Q16: The plural of "bird" is —', options: ['birds', 'birdes', 'birdies'], answer: 0 },
+            { q: 'Q17: "Big" in comparative form is —', options: ['Bigger', 'Biggest', 'Bigly'], answer: 0 },
+            { q: 'Q18: "Friendship" is a —', options: ['Noun', 'Verb', 'Adjective'], answer: 0 },
+            { q: 'Q19: The noun case for "I see the bird." "I" is —', options: ['Object Case', 'Subject Case'], answer: 1 },
+            { q: 'Q20: "Happy" in superlative is —', options: ['Happier', 'Happiest', 'Happyest'], answer: 1 },
+            { q: 'Q21: "The chir flew high." "Flew" is —', options: ['Verb', 'Noun', 'Adjective'], answer: 0 },
+            { q: 'Q22: "The chir is a small bird." "Small" is a —', options: ['Verb', 'Adjective', 'Noun'], answer: 1 },
+            { q: 'Q23: "He is the _____ in the class."', options: ['smart', 'smarter', 'smartest'], answer: 2 },
+            { q: 'Q24: "They sing beautifully." "Beautifully" is a —', options: ['Adverb', 'Adjective', 'Noun'], answer: 0 },
+            { q: 'Q25: "Boy" is —', options: ['Masculine', 'Feminine', 'Neuter'], answer: 0 },
+            { q: 'Q26: "Actress" refers to —', options: ['Female Actor', 'Male Actor', 'Animal'], answer: 0 },
+            { q: 'Q27: "Bird" belongs to —', options: ['Living Noun', 'Non-living Noun'], answer: 0 },
+            { q: 'Q28: The opposite of "small" is —', options: ['Tiny', 'Big', 'Little'], answer: 1 },
+            { q: 'Q29: "The chir is singing." "Singing" is a —', options: ['Verb', 'Noun', 'Adjective'], answer: 0 },
+            { q: 'Q30: "Happy" is —', options: ['Adjective', 'Noun', 'Verb'], answer: 0 },
+            { q: 'Q31: "Small" comparative is —', options: ['Smaller', 'Smallest', 'More small'], answer: 0 },
+            { q: 'Q32: "Chir" is a —', options: ['Noun', 'Verb', 'Adjective'], answer: 0 },
+            { q: 'Q33: Degree of Comparison of "Bad"?', options: ['Badder', 'Worse', 'Worst'], answer: 1 },
+            { q: 'Q34: "Friend" plural is —', options: ['Friends', 'Friendes', 'Friendies'], answer: 0 },
+            { q: 'Q35: "Tall" superlative is —', options: ['Taller', 'Tallest', 'Tall'], answer: 1 },
+            { q: 'Q36: "She acts well." "Acts" is —', options: ['Verb', 'Noun', 'Adjective'], answer: 0 },
+            { q: 'Q37: Feminine of "Nephew" is —', options: ['Niece', 'Nephewette', 'Nephewina'], answer: 0 },
+            { q: 'Q38: "The bird is chirping." "Chirping" is a —', options: ['Noun', 'Adjective', 'Verb'], answer: 2 },
+            { q: 'Q39: "He is _____ than me."', options: ['taller', 'tallest', 'tall'], answer: 0 },
+            { q: 'Q40: "The chir is sweet." "Sweet" is —', options: ['Noun', 'Verb', 'Adjective'], answer: 2 }
+        ];
+
+        const quizContainer = document.getElementById('quiz-container');
+        const resultContainer = document.getElementById('result');
+        const certificate = document.getElementById('certificate');
+        const certText = document.getElementById('cert-text');
+
+        questions.forEach((q, index) => {
+            const div = document.createElement('div');
+            div.classList.add('question');
+            div.innerHTML = `
+                <p><b>${q.q}</b></p>
+                ${q.options.map((opt, optIndex) => `
+                    <button onclick="answerQuestion(${index}, ${optIndex}, this)">${opt}</button>
+                `).join('')}
+                <div id="feedback-${index}" class="result"></div>
+                <hr>
+            `;
+            quizContainer.appendChild(div);
+        });
+
+        let correctAnswers = 0;
+        const answered = new Array(40).fill(false);
+
+        function answerQuestion(qIndex, selectedIndex, btn) {
+            const feedback = document.getElementById(`feedback-${qIndex}`);
+            if (answered[qIndex]) return;
+
+            answered[qIndex] = true;
+
+            if (selectedIndex === questions[qIndex].answer) {
+                feedback.innerText = '✅ Correct!';
+                correctAnswers++;
+                btn.style.backgroundColor = '#2ecc71';
+            } else {
+                feedback.innerText = '❌ Incorrect!';
+                btn.style.backgroundColor = '#e74c3c';
+            }
+        }
+
+        function checkCompletion() {
+            if (answered.every(ans => ans)) {
+                const totalMarks = correctAnswers * 2;
+                resultContainer.innerText = `🎉 You answered all questions! Score: ${totalMarks}/80`;
+
+                certText.innerHTML = `
+                    Name: Aryan<br>
+                    Marks Scored: ${totalMarks} / 80<br>
+                    Keep learning and stay awesome! 🌟
+                `;
+
+                certificate.style.display = 'block';
+            } else {
+                resultContainer.innerText = 'Please answer all questions before submitting!';
+            }
+        }
+
+        function generateCertificatePDF() {
+            const doc = new jsPDF();
+            doc.setFontSize(20);
+            doc.text('Certificate of Achievement', 20, 30);
+            doc.setFontSize(16);
+            doc.text('This is to certify that', 20, 50);
+            doc.setFontSize(22);
+            doc.text('Aryan', 20, 70);
+            doc.setFontSize(16);
+            doc.text(`has successfully completed the English Grammar Quiz`, 20, 90);
+            doc.text(`Score: ${correctAnswers * 2}/80`, 20, 110);
+            doc.text('Keep up the great work! 🎉', 20, 130);
+
+            doc.save('Aryan_English_Certificate.pdf');
+        }
+    </script>
+</body>
+
+</html>
